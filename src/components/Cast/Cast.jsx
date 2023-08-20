@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'; // хуки з бібліотеки react
 import { useParams } from 'react-router-dom'; // хук з бібліотеки react-router-dom
 import { fetchCast } from 'services/services'; // ф-я запиту про акторськи склад
-// import imgnf from '../../pages/img/imgnf.jpeg'
+import imgnf from '../../pages/img/imgnf.jpg'
 import { CastInfo, CastItem } from './Cast.styled'; // стилізація
 
 
@@ -18,27 +18,27 @@ const Cast = () => {
       });
   }, [movieId]);
 
-  // const imageUrl = 'https://image.tmdb.org/t/p/w300'; //https://developer.themoviedb.org/reference/person-images
+  const imageUrl = 'https://image.tmdb.org/t/p/w300'; //https://developer.themoviedb.org/reference/person-images
 // const defaultImg = 'img';
   return (
     <ul>
       {cast.map(({ id, profile_path, original_name, name, character }) => (
         <CastItem key={id}>
-          {profile_path && (
+      
             <img
-              // src={profile_path 
-              //   ? `${imageUrl}${profile_path}`
-              //   : imgnf}
-                
-                src={
-                  profile_path
-                    ? `https://image.tmdb.org/t/p/w300${profile_path}`
-                    : `https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg`
-                }
+              src={profile_path 
+                ? `${imageUrl}${profile_path}`
+                : imgnf}
+                // Варіант через посилання на зовнішню сторінку
+                // src={
+                //   profile_path
+                //     ? `https://image.tmdb.org/t/p/w300${profile_path}`
+                //     : `https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg`
+                // }
               alt={original_name}
               width="120"
             />
-          )}
+      
           <CastInfo>
             <p>
               <b>Name:</b> {name}

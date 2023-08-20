@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'; // Імпорт хуків
 import { Outlet, useLocation, useParams } from 'react-router-dom';
 import { fetchOneMovie } from 'services/services'; //запит до API про конкретний фільм
 import { RxArrowLeft, RxArrowRight } from 'react-icons/rx'; //імпорт іконок
-import img from '../img/imgnf.jpeg'
+import img from '../img/imgnf.jpg'
 import {
   AdditionalInfo,
   AdditionalList,

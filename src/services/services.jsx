@@ -8,9 +8,12 @@ export const fetchTrending = async () => {
   const params = {
     api_key: API_KEY,
     page: 1, // пагінація результатів
-  };
-  const { data } = await axios.get('/trending/movie/day', { params });
+  }; 
+  try {const { data } = await axios.get('/trending/movie/day', { params });
   return data.results;
+} catch (error){ 
+  console.error(error);
+}
 };
 
 //Пошук фільмім по запиту (query)
