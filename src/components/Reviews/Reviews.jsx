@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'; // імпорт хуків
 import { useParams } from 'react-router-dom';// параметри URL
+import { format } from 'date-fns'
 import { fetchReviews } from 'services/services';//ф-я fetchReviews з модуля services
 
 const Reviews = () => {
@@ -15,16 +16,23 @@ const Reviews = () => {
       });
   }, [movieId]);
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const formatDate = `${date.getFullYear()}
-    - ${(date.getMonth() + 1).toString().padStart(2, '0')}
-    - ${date.getDate().toString().padStart(2, '0')}
-    (${date.getHours().toString().padStart(2, '0')}
-    : ${date.getMinutes().toString().padStart(2, '0')}
-    : ${date.getSeconds().toString().padStart(2, '0')}) `;
+  //було
+  // function formatDate(dateString) {
+  //   const date = new Date(dateString);
+  //   const formatDate = `${date.getFullYear()}
+  //   - ${(date.getMonth() + 1).toString().padStart(2, '0')}
+  //   - ${date.getDate().toString().padStart(2, '0')}
+  //   (${date.getHours().toString().padStart(2, '0')}
+  //   : ${date.getMinutes().toString().padStart(2, '0')}
+  //   : ${date.getSeconds().toString().padStart(2, '0')}) `;
+  //   return formatDate;
 
-    return formatDate;
+    //стало
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const formatDate = format(date, "yyyy-MM-dd (HH:mm:ss)")
+      return formatDate;
+
   }
 
   return (

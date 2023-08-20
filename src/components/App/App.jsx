@@ -1,8 +1,10 @@
-import React, { Suspense, lazy } from 'react';
+import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { ThreeDots } from 'react-loader-spinner';
+import Layout from 'components/Layout/Layout';
 
-const Layout = lazy(() => import('../Layout/Layout'));
+// import { ThreeDots } from 'react-loader-spinner';
+
+// const Layout = lazy(() => import('../Layout/Layout'));
 const Home = lazy(() => import('pages/Home/Home'));
 const Movies = lazy(() => import('pages/Movies/Movies'));
 const MovieDetails = lazy(() => import('pages/MovieDetails/MovieDetails'));
@@ -12,7 +14,7 @@ const NotFound = lazy(() => import('pages/NotFound/NotFound'));
 
  export const App = () => {
   return (
-    <Suspense fallback={<ThreeDots />}>
+    // <Suspense fallback={<ThreeDots />}>
       <Routes>
         <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
@@ -24,7 +26,7 @@ const NotFound = lazy(() => import('pages/NotFound/NotFound'));
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </Suspense>
+    // </Suspense>
   );
 };
 

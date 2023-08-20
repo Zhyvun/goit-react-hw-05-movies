@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState } from 'react'; // Імпорт хуків
 import { Outlet, useLocation, useParams } from 'react-router-dom';
-import { fetchOneMovie } from 'services/services';//запит до API про конкретний фільм 
-import { RxArrowLeft, RxArrowRight } from 'react-icons/rx';//імпорт іконок
-import { AdditionalInfo, 
-  AdditionalList, 
-  BackButton, 
-  DetailsContainer, 
-  MovieInfo, 
-  SubMenuLink 
-} from './MovieDetails.styled';// імпотр стилів
+import { fetchOneMovie } from 'services/services'; //запит до API про конкретний фільм
+import { RxArrowLeft, RxArrowRight } from 'react-icons/rx'; //імпорт іконок
+import img from '../img/imgnf.jpeg'
+import {
+  AdditionalInfo,
+  AdditionalList,
+  BackButton,
+  DetailsContainer,
+  MovieInfo,
+  SubMenuLink,
+} from './MovieDetails.styled'; // імпотр стилів
+
+// const defaultImg = 'img';
 
 const MovieDetails = () => {
-  const [movie, setMovie] = useState({});
+  const [movie, setMovie] = useState(null);
   const location = useLocation();
   const backLinkRef = useRef(location.state?.from ?? '/');
   const { movieId } = useParams();
@@ -24,6 +28,10 @@ const MovieDetails = () => {
         setMovie({});
       });
   }, [movieId]);
+
+  if (!movie) {
+    return;
+  }
 
   function countUserScore() {
     const average = movie.vote_average;
@@ -44,9 +52,17 @@ const MovieDetails = () => {
         Go back
       </BackButton>
       <MovieInfo>
-        {posterPath && (
-          <img src={`${imageUrl}${posterPath}`} alt={movie.title} />
-        )}
+        {/* відображалась тільки картинка , яка приходила, додали ще картинку за замовчуванням
+        {posterPath  && (
+            <img src= { `${imageUrl}${posterPath}`} 
+          alt={movie.title} />
+        )} */}
+        {
+          <img
+            src={posterPath ? `${imageUrl}${posterPath}` : img}
+            alt={movie.title}
+          />
+        }
         <div>
           <h2>
             {movie.title} ({releaseDate ? releaseDate : movie.status})

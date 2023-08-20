@@ -21,6 +21,7 @@ export const fetchSearchResult = async query => {
     query,
   };
   const { data } = await axios.get('/search/movie', { params });
+  console.log(data.results)
   return data.results.filter(movie =>
     movie.title.toLowerCase().includes(query.toLowerCase())
   );
@@ -33,7 +34,7 @@ export const fetchOneMovie = async movieId => {
     page: 1,
   };
   const { data } = await axios.get(`/movie/${movieId}`, { params });
-  console.log(data);
+  // console.log(data);
   return data;
 };
 
@@ -44,8 +45,13 @@ export const fetchCast = async movieId => {
     page: 1,
     language: 'en-US',
   };
+   try{  
   const { data } = await axios.get(`/movie/${movieId}/credits`, { params });
   return data;
+} catch (error) {
+  console.error(error.message);
+  throw new Error('Failed to fetch cast');
+}
 };
 
 //Результат огляду фільму (moviedId)
@@ -56,7 +62,9 @@ export const fetchReviews = async movieId => {
     language: 'en-US',
   };
   const { data } = await axios.get(`/movie/${movieId}/reviews`, { params });
+  console.log(data);
   return data.results;
+  
 };
 
 //*#info - функції пошуку (асинхронні запити до API)

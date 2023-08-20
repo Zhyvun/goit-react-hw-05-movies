@@ -1,6 +1,7 @@
+import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom'; // Відображення відповідного змісту в залежності від поточного шляху
 import { Header, Navigation, PageLink } from './Layout.styled'; // Стилізовані компоненти
-
+import Loader from 'components/Loader/Loader';
 
 const Layout = () => {
   return (
@@ -12,15 +13,15 @@ const Layout = () => {
         </Navigation>
       </Header>
       <main>
-        <Outlet />
+        <Suspense fallback={<Loader />}>
+          <Outlet />
+        </Suspense>
       </main>
     </>
   );
 };
 
-
 export default Layout;
-
 
 //*#Info - основна структура сторінки (заголовок, навігація, область компонента)
 /* 

@@ -1,23 +1,46 @@
-import { Link } from 'react-router-dom' // створення навігаційних посилань усередині програми без перезавантаження сторінки
+// import { Link } from 'react-router-dom' // створення навігаційних посилань усередині програми без перезавантаження сторінки
 import { useLocation } from 'react-router-dom' // хук - інформація про поточну URL-адресу.
+import PropTypes from 'prop-types';
+
+import { List, Item, MovieLink } from './MoviesList.styled';
+
 
 const MoviesList = ({ movies }) => {
   const location = useLocation(); // використовуємо хук для для отримання інформації про поточний URL
 
   return (
-    <ul> 
+    <List> 
       {movies.length > 0 && 
-      movies.map(movie => {
+      movies.map(({ id, title }) => {
         return (
-          <li key={movie.id}>
-              <Link to={`/movies/${movie.id}`} state={{ from: location }}>
-            {movie.title}
-            </Link>
-          </li>
+          <Item key={id}>
+            <MovieLink to={`/movies/${id}`} state={{ from: location }}>
+            {title}
+            </MovieLink>
+          </Item>
         );
       })}
-    </ul>
+    </List>
+
+//   <List>
+//   {movies.map(movie => (
+//     <Item key={movie.id}>
+//       <MovieLink to={`/movies/${movie.id}`} state={{ from: location }}>
+//         {movie.title}
+//       </MovieLink>
+//     </Item>
+//   ))}
+// </List>
   );
+};
+
+MoviesList.propTypes = {
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+    })
+  ),
 };
 
 export default MoviesList;

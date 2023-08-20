@@ -1,49 +1,55 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { DebounceInput } from 'react-debounce-input';
+import { useSearchParams } from 'react-router-dom';//оновлення параметрів URL
 import { fetchSearchResult } from 'services/services';
+import Loader from 'components/Loader/Loader';// імпорт лоадера
+import Form from 'components/Form/Form'; // імпорт форми 
 import MoviesList from 'components/MoviesList/MoviesList';
-import { MoviesBox } from './Movies.styled';
+import { MoviesBox } from './Movies.styled'; // стилізація компонентів
 
 const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [requestFall, setRequestFall] = useState(false);
   const query = searchParams.get('query') ?? '';
 
   useEffect(() => {
     if (query === '') {
       setMovies([]);
       return;
-    }
-
-    fetchSearchResult(query)
+     }
+    setLoading(true);
+    const answer = fetchSearchResult(query)
       .then(foundedMovies => {
         setMovies(foundedMovies);
+        setRequestFall(foundedMovies.length === 0)
       })
+
       .catch(error => {
         console.error(error.message);
+        // setRequestFall(error.message);
         setMovies([]);
+      })
+      .finally(() => {
+        setLoading(false);
+        // setRequestFall(false);
       });
+      console.log(answer)
   }, [query]);
+  
 
-  const handleInputChange = event => {
-    if (event.target.value === '') {
-      return setSearchParams({});
-    }
-    setSearchParams({ query: event.target.value });
+  const setParams = query => {
+    const params = query !== '' ? { query } : {};
+    setSearchParams(params);
+    // console.log(params)
   };
 
   return (
     <MoviesBox>
-      <DebounceInput // затримка введення тексту
-        minLength={3} // мінумум 3 символа
-        debounceTimeout={300} // 300 мілісекунд
-        type="text"
-        value={query} // якщо заданий запит → виведеться заголовок "Found movies"
-        placeholder="Enter movie's title..."
-        onChange={handleInputChange}
-      />
-      {query && <h1>Found movies</h1>}
+      <Form setParams={setParams} />
+      {loading && <Loader />}
+      {requestFall && (<h1>No movies with this request. Please, try again</h1>) }
+      {(query && movies.length > 0) && <h1>Found movies</h1>}
       {!!movies.length && <MoviesList movies={movies} />}
     </MoviesBox>
   );
@@ -51,25 +57,27 @@ const Movies = () => {
 
 export default Movies;
 
-//*#info - Пошук фільмів по назві з використанням параметрів URL і виводу результату на сторінці
-
+//*info - Пошук фільмів по назві з використанням параметрів URL і виводу результату на сторінці
 /*
-const [movies, setMovies] = useState([]); - хук стану useState, змінна стану movies - зберігає [список] фільмів, функція setMovies - оновлення списку
-const [searchParams, setSearchParams] = useSearchParams() - кастомний хук для роботи з параметрами URL - отримання парметру запиту 'query' URL.
-const query = searchParams.get('query') ?? ''; - Отримуємо значення, якщо нічого немає → пуста стрічка
+-----Як стало після змін ---------
+Хук useState для створення стану:
+    movies: Масив фільмів.
+    searchParams: Параметри пошукового запиту з URL.
+    loading: Стан завантаження даних.
+    requestFall: Стан, який показує, чи був хибний запит на пошук.
 
-useEffect(() => { ... }, [query]) - хук useEffect - { заантаження списку фільмів }, тільки при зміні парметра [query] 
-if(query === '') { // якщо query пустий очисти список > інакше викличи ф-ю fetchSearchResult(query) - шукаємо фільми
-setMovies([]); - знайдені фільми запиши в movies
-catch(error => {...}) - якщо помилка виведи повідомлення в консоль, очисти список
+[searchParams, setSearchParams] = useSearchParams(); - зчитування запиту з параметрів URL,  useSearchParams - створення змінної query
+useEffect, -  реагує на зміну query, якщо query обнуляються movies, завершується виконання, інакше встановлюється виконання loading - на true
+fetchSearchResult - отримання результатів пошуку фільмів, 
+setRequestFall(foundedMovies.length === 0) - перевіряється, чи був запит вдалим. Якщо нічого не знайдено, встановлюється requestFall в true. 
+при помилці - встановлюється requestFall в true, виводиться повідомлення про помилку {requestFall && (<h1>No ...)}
+setParams -  встановлення параметрів URL на основі введеного запиту. Якщо запит порожній, встановлюються порожні параметри.
 
-const handleInputChange = event => { ... } - обробник події зміни введення тексту. 
-Якщо значення введення (event.target.value) порожнє → параметри пошуку (searchParams) → встанови пустий об'єкт. 
-Інакше 'query' → значення введення.
-
-return (...) - повертаємо розмітку
-DebounceInput - затримка введення тексту
-
-{!!movies.length && <MoviesList movies={movies}/>} } - виводимо список фільмів якщо його довжина > 0, (передаються як властивість до компонента MoviesList) 
+return ()
+<Form setParams={setParams} /> - форми для введення пошукового запитe  setParams - пропс
+{loading && <Loader />} - індикатор завантаження
+{requestFall && (<h1>No ...)} - повідомлення про помилку
+{(query && movies.length > 0) && <h1>Found ...)} -якщо query не порожній і кількість фільмів більше 0 - відображаємо заголовок 
+{!!movies.length && <MoviesList movies={movies} />} - Відображення списку фільмів
 
 */
